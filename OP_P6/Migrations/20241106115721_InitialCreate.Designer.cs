@@ -12,7 +12,7 @@ using OP_P6.Data;
 namespace OP_P6.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241106093247_InitialCreate")]
+    [Migration("20241106115721_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -59,6 +59,34 @@ namespace OP_P6.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("OP_P6.Data.Entities.ProductVersionOperatingSystem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OperatingSystemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VersionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperatingSystemId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("VersionId");
+
+                    b.ToTable("ProductVersionOperatingSystems");
+                });
+
             modelBuilder.Entity("OP_P6.Data.Entities.Ticket", b =>
                 {
                     b.Property<int>("Id")
@@ -70,12 +98,12 @@ namespace OP_P6.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OperatingSystemId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Problem")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductVersionOperatingSystemId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Resolved")
                         .HasColumnType("datetime2");
@@ -88,14 +116,9 @@ namespace OP_P6.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("VersionId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("OperatingSystemId");
-
-                    b.HasIndex("VersionId");
+                    b.HasIndex("ProductVersionOperatingSystemId");
 
                     b.ToTable("Tickets");
                 });
@@ -108,93 +131,50 @@ namespace OP_P6.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Name")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("Versions");
                 });
 
-            modelBuilder.Entity("OperatingSystemVersion", b =>
-                {
-                    b.Property<int>("OperatingSystemsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VersionsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OperatingSystemsId", "VersionsId");
-
-                    b.HasIndex("VersionsId");
-
-                    b.ToTable("OperatingSystemVersion");
-                });
-
-            modelBuilder.Entity("OP_P6.Data.Entities.Ticket", b =>
+            modelBuilder.Entity("OP_P6.Data.Entities.ProductVersionOperatingSystem", b =>
                 {
                     b.HasOne("OP_P6.Data.Entities.OperatingSystem", "OperatingSystem")
-                        .WithMany("Tickets")
+                        .WithMany()
                         .HasForeignKey("OperatingSystemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("OP_P6.Data.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OP_P6.Data.Entities.Version", "Version")
-                        .WithMany("Tickets")
+                        .WithMany()
                         .HasForeignKey("VersionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("OperatingSystem");
 
+                    b.Navigation("Product");
+
                     b.Navigation("Version");
                 });
 
-            modelBuilder.Entity("OP_P6.Data.Entities.Version", b =>
+            modelBuilder.Entity("OP_P6.Data.Entities.Ticket", b =>
                 {
-                    b.HasOne("OP_P6.Data.Entities.Product", "Product")
-                        .WithMany("Versions")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("OperatingSystemVersion", b =>
-                {
-                    b.HasOne("OP_P6.Data.Entities.OperatingSystem", null)
+                    b.HasOne("OP_P6.Data.Entities.ProductVersionOperatingSystem", "ProductVersionOperatingSystem")
                         .WithMany()
-                        .HasForeignKey("OperatingSystemsId")
+                        .HasForeignKey("ProductVersionOperatingSystemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OP_P6.Data.Entities.Version", null)
-                        .WithMany()
-                        .HasForeignKey("VersionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("OP_P6.Data.Entities.OperatingSystem", b =>
-                {
-                    b.Navigation("Tickets");
-                });
-
-            modelBuilder.Entity("OP_P6.Data.Entities.Product", b =>
-                {
-                    b.Navigation("Versions");
-                });
-
-            modelBuilder.Entity("OP_P6.Data.Entities.Version", b =>
-                {
-                    b.Navigation("Tickets");
+                    b.Navigation("ProductVersionOperatingSystem");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,39 +9,15 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    DbSet<Ticket> Tickets { get; set; }
-    DbSet<Product> Products { get; set; }
-    DbSet<Entities.Version> Versions { get; set; }
-    DbSet<Entities.OperatingSystem> OperatingSystems { get; set; }
+    public DbSet<Ticket> Tickets { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Entities.Version> Versions { get; set; }
+    public DbSet<Entities.OperatingSystem> OperatingSystems { get; set; }
+    public DbSet<ProductVersionOperatingSystem> ProductVersionOperatingSystems { get; set; }
 
-    override protected void OnModelCreating(ModelBuilder modelBuilder)
+    override protected void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
-
-        modelBuilder
-            .Entity<Product>()
-            .HasMany(p => p.Versions)
-            .WithOne(v => v.Product)
-            .HasForeignKey(v => v.ProductId);
-
-        modelBuilder
-            .Entity<Entities.Version>()
-            .HasMany(v => v.OperatingSystems)
-            .WithMany(o => o.Versions);
-
-
-        modelBuilder
-            .Entity<Ticket>()
-            .HasOne(t => t.Version)
-            .WithMany(v => v.Tickets)
-            .HasForeignKey(t => t.VersionId);
-
-
-        modelBuilder
-            .Entity<Ticket>()
-            .HasOne(t => t.OperatingSystem)
-            .WithMany(o => o.Tickets)
-            .HasForeignKey(t => t.OperatingSystemId);
+        base.OnModelCreating(builder);
     }
 
 }
