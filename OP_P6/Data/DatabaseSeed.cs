@@ -62,7 +62,6 @@ public static class DatabaseSeed
 
         context.SaveChanges();
 
-        
         var product1 = context.Products.First(p => p.Name == "Trader en Herbe");
         var product2 = context.Products.First(p => p.Name == "Maître des Investissements");
         var product3 = context.Products.First(p => p.Name == "Planificateur d’Entraînement");

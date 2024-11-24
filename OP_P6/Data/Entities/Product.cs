@@ -39,7 +39,7 @@ public class Ticket
     public int ProductVersionOperatingSystemId { get; set; }
     public ProductVersionOperatingSystem? ProductVersionOperatingSystem { get; set; }
     public DateTime Created { get; set; }
-    public DateTime Resolved { get; set; } = DateTime.MaxValue;
+    public DateTime? Resolved { get; set; }
     public string Status { get; set; } = string.Empty;
     public string Problem { get; set; } = string.Empty;
     public string Solution { get; set; } = string.Empty;
